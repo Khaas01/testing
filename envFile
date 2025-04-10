@@ -47,11 +47,14 @@ STORAGE_DIR="/Users/khaas/Google Drive/AI Agency/Storage"
 
 # Optional: Store vector DB (for memory/RAG)
 VECTOR_STORE=faiss
-VECTOR_STORE_DIR="/Users/khaas/Google Drive/AI Agency/Storage/vector storage
+VECTOR_STORE_DIR="/Users/khaas/Google Drive/AI Agency/Storage/vector storage"
 
 ######################################
 # 🔗 Google Drive API Config
 ######################################
+
+# CRITICAL: Enable Google Drive integration
+ENABLE_GOOGLE_DRIVE_INTEGRATION=true
 
 # Google Drive API configuration
 GOOGLE_DRIVE_CLIENT_ID="941756257935-a5gl5mk6g5291vp4mia0lm1pqskprm8q.apps.googleusercontent.com"
