@@ -1,0 +1,1452 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "AI Agency Drive Controller – Local Filesystem & Google Workspace Edition",
+    "version": "v4.0.0",
+    "description": "Comprehensive API for managing local files, Google Docs, and Sheets.\nEnables the AI to recursively navigate, read, write, rename, and organize local files,\ndocuments, and folders. Provides extensive Google Sheets database functionality."
+  },
+  "servers": [
+    {
+      "url": "https://ipr-estimate.com"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization"
+      }
+    },
+    "schemas": {}
+  },
+  "security": [
+    {
+      "ApiKeyAuth": []
+    }
+  ],
+  "paths": {
+    "/drive/list": {
+      "get": {
+        "summary": "List root folder",
+        "operationId": "listFiles",
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of files and folders",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "name",
+                      "type"
+                    ],
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "file",
+                          "folder"
+                        ]
+                      },
+                      "children": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "required": [
+                            "name",
+                            "type"
+                          ],
+                          "properties": {
+                            "name": {
+                              "type": "string"
+                            },
+                            "type": {
+                              "type": "string",
+                              "enum": [
+                                "file",
+                                "folder"
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/drive/list-path": {
+      "get": {
+        "summary": "List folder contents",
+        "operationId": "listByPath",
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "subpath",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Folder contents",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "name",
+                      "type"
+                    ],
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "file",
+                          "folder"
+                        ]
+                      },
+                      "children": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "required": [
+                            "name",
+                            "type"
+                          ],
+                          "properties": {
+                            "name": {
+                              "type": "string"
+                            },
+                            "type": {
+                              "type": "string",
+                              "enum": [
+                                "file",
+                                "folder"
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Folder not found"
+          }
+        }
+      }
+    },
+    "/drive/read-file": {
+      "get": {
+        "summary": "Read contents of a file",
+        "operationId": "readFile",
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "filename",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "File contents",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "content"
+                  ],
+                  "properties": {
+                    "content": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "File not found"
+          }
+        }
+      }
+    },
+    "/drive/write-file": {
+      "post": {
+        "summary": "Create or update a file",
+        "operationId": "writeFile",
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "filename",
+                  "content"
+                ],
+                "properties": {
+                  "filename": {
+                    "type": "string",
+                    "description": "Relative path + name under the root"
+                  },
+                  "content": {
+                    "type": "string",
+                    "description": "File contents as a string"
+                  },
+                  "folder_path": {
+                    "type": "string",
+                    "description": "Optional nested folder under root"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "File written successfully"
+          }
+        }
+      }
+    },
+    "/drive/create-folder": {
+      "post": {
+        "summary": "Create a new folder",
+        "operationId": "createFolder",
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "folder_path"
+                ],
+                "properties": {
+                  "folder_path": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Folder created"
+          }
+        }
+      }
+    },
+    "/drive/move-file": {
+      "post": {
+        "summary": "Move a file or folder",
+        "operationId": "moveFile",
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "src",
+                  "dst"
+                ],
+                "properties": {
+                  "src": {
+                    "type": "string"
+                  },
+                  "dst": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Move successful"
+          }
+        }
+      }
+    },
+    "/drive/delete-file": {
+      "delete": {
+        "summary": "Soft‑delete (move to .trash/)",
+        "operationId": "deleteFile",
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "path",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Item moved to trash"
+          },
+          "404": {
+            "description": "File/folder not found"
+          }
+        }
+      }
+    },
+    "/sheets/create": {
+      "post": {
+        "summary": "Create a Google Sheet",
+        "operationId": "createSheet",
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "data": {
+                    "type": "string"
+                  },
+                  "folder_path": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Returns spreadsheetId",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "spreadsheetId"
+                  ],
+                  "properties": {
+                    "spreadsheetId": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sheets/read": {
+      "get": {
+        "summary": "Read a Google Sheet range",
+        "operationId": "readSheet",
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "spreadsheet_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "range",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "value_render_option",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "FORMATTED_VALUE",
+                "UNFORMATTED_VALUE",
+                "FORMULA"
+              ],
+              "default": "FORMATTED_VALUE"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Range values",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "values"
+                  ],
+                  "properties": {
+                    "values": {
+                      "type": "array",
+                      "items": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Spreadsheet/range not found"
+          }
+        }
+      }
+    },
+    "/sheets/update": {
+      "post": {
+        "summary": "Update a Google Sheet range",
+        "operationId": "updateSheet",
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "spreadsheet_id",
+                  "range",
+                  "values"
+                ],
+                "properties": {
+                  "spreadsheet_id": {
+                    "type": "string"
+                  },
+                  "range": {
+                    "type": "string"
+                  },
+                  "values": {
+                    "type": "array",
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "value_input_option": {
+                    "type": "string",
+                    "enum": [
+                      "RAW",
+                      "USER_ENTERED"
+                    ],
+                    "default": "USER_ENTERED"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Sheet updated"
+          }
+        }
+      }
+    },
+    "/sheets/append": {
+      "post": {
+        "summary": "Append rows to a Google Sheet",
+        "operationId": "appendSheet",
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "spreadsheet_id",
+                  "range",
+                  "values"
+                ],
+                "properties": {
+                  "spreadsheet_id": {
+                    "type": "string"
+                  },
+                  "range": {
+                    "type": "string",
+                    "description": "Range where data will be appended after last row"
+                  },
+                  "values": {
+                    "type": "array",
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "value_input_option": {
+                    "type": "string",
+                    "enum": [
+                      "RAW",
+                      "USER_ENTERED"
+                    ],
+                    "default": "USER_ENTERED"
+                  },
+                  "insert_data_option": {
+                    "type": "string",
+                    "enum": [
+                      "INSERT_ROWS",
+                      "OVERWRITE"
+                    ],
+                    "default": "INSERT_ROWS"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Data appended successfully"
+          }
+        }
+      }
+    },
+    "/sheets/batch-update": {
+      "post": {
+        "summary": "Execute multiple updates to a sheet in a single request",
+        "operationId": "batchUpdateSheet",
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "spreadsheet_id",
+                  "requests"
+                ],
+                "properties": {
+                  "spreadsheet_id": {
+                    "type": "string"
+                  },
+                  "requests": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "description": "Google Sheets API update requests"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updates applied successfully"
+          }
+        }
+      }
+    },
+    "/sheets/list-tabs": {
+      "get": {
+        "summary": "List all sheets/tabs in a Google Spreadsheet",
+        "operationId": "listSpreadsheetSheets",
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "spreadsheet_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of sheet/tab properties",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "title": {
+                        "type": "string"
+                      },
+                      "sheetId": {
+                        "type": "integer"
+                      },
+                      "index": {
+                        "type": "integer"
+                      },
+                      "sheetType": {
+                        "type": "string"
+                      },
+                      "hidden": {
+                        "type": "boolean"
+                      },
+                      "gridProperties": {
+                        "type": "object"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Spreadsheet not found"
+          }
+        }
+      }
+    },
+    "/sheets/add-tab": {
+      "post": {
+        "summary": "Add a new sheet/tab to a Google Spreadsheet",
+        "operationId": "addSpreadsheetSheet",
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "spreadsheet_id",
+                  "title"
+                ],
+                "properties": {
+                  "spreadsheet_id": {
+                    "type": "string"
+                  },
+                  "title": {
+                    "type": "string"
+                  },
+                  "hidden": {
+                    "type": "boolean",
+                    "default": false
+                  },
+                  "rows": {
+                    "type": "integer",
+                    "default": 1000
+                  },
+                  "columns": {
+                    "type": "integer",
+                    "default": 26
+                  },
+                  "tab_color": {
+                    "type": "object",
+                    "properties": {
+                      "red": {
+                        "type": "number"
+                      },
+                      "green": {
+                        "type": "number"
+                      },
+                      "blue": {
+                        "type": "number"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "New sheet/tab properties",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "title": {
+                      "type": "string"
+                    },
+                    "sheetId": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sheets/delete-tab": {
+      "delete": {
+        "summary": "Delete a sheet/tab from a Google Spreadsheet",
+        "operationId": "deleteSpreadsheetSheet",
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "spreadsheet_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sheet_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sheet deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sheets/format": {
+      "post": {
+        "summary": "Format cells in a Google Sheet",
+        "operationId": "formatSheetCells",
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "spreadsheet_id",
+                  "sheet_id",
+                  "range",
+                  "formatting"
+                ],
+                "properties": {
+                  "spreadsheet_id": {
+                    "type": "string"
+                  },
+                  "sheet_id": {
+                    "type": "integer"
+                  },
+                  "range": {
+                    "type": "object",
+                    "properties": {
+                      "startRowIndex": {
+                        "type": "integer"
+                      },
+                      "endRowIndex": {
+                        "type": "integer"
+                      },
+                      "startColumnIndex": {
+                        "type": "integer"
+                      },
+                      "endColumnIndex": {
+                        "type": "integer"
+                      }
+                    }
+                  },
+                  "formatting": {
+                    "type": "object",
+                    "properties": {
+                      "backgroundColor": {
+                        "type": "object"
+                      },
+                      "textFormat": {
+                        "type": "object"
+                      },
+                      "horizontalAlignment": {
+                        "type": "string"
+                      },
+                      "verticalAlignment": {
+                        "type": "string"
+                      },
+                      "borders": {
+                        "type": "object"
+                      },
+                      "numberFormat": {
+                        "type": "object"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Formatting applied successfully"
+          }
+        }
+      }
+    },
+    "/sheets/create-filter": {
+      "post": {
+        "summary": "Add filter view to a Google Sheet",
+        "operationId": "createSheetFilter",
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "spreadsheet_id",
+                  "sheet_id",
+                  "range"
+                ],
+                "properties": {
+                  "spreadsheet_id": {
+                    "type": "string"
+                  },
+                  "sheet_id": {
+                    "type": "integer"
+                  },
+                  "range": {
+                    "type": "object",
+                    "properties": {
+                      "startRowIndex": {
+                        "type": "integer"
+                      },
+                      "endRowIndex": {
+                        "type": "integer"
+                      },
+                      "startColumnIndex": {
+                        "type": "integer"
+                      },
+                      "endColumnIndex": {
+                        "type": "integer"
+                      }
+                    }
+                  },
+                  "title": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Filter created successfully"
+          }
+        }
+      }
+    },
+    "/sheets/freeze-panes": {
+      "post": {
+        "summary": "Freeze rows or columns in a Google Sheet",
+        "operationId": "freezeSheetPanes",
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "spreadsheet_id",
+                  "sheet_id"
+                ],
+                "properties": {
+                  "spreadsheet_id": {
+                    "type": "string"
+                  },
+                  "sheet_id": {
+                    "type": "integer"
+                  },
+                  "rows": {
+                    "type": "integer",
+                    "default": 0
+                  },
+                  "columns": {
+                    "type": "integer",
+                    "default": 0
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Panes frozen successfully"
+          }
+        }
+      }
+    },
+    "/sheets/conditional-format": {
+      "post": {
+        "summary": "Add conditional formatting to a Google Sheet",
+        "operationId": "conditionalFormatSheet",
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "spreadsheet_id",
+                  "sheet_id",
+                  "range",
+                  "rule_type"
+                ],
+                "properties": {
+                  "spreadsheet_id": {
+                    "type": "string"
+                  },
+                  "sheet_id": {
+                    "type": "integer"
+                  },
+                  "range": {
+                    "type": "object"
+                  },
+                  "rule_type": {
+                    "type": "string",
+                    "enum": [
+                      "COLOR_SCALE",
+                      "DATA_BAR",
+                      "ICON_SET",
+                      "CUSTOM_FORMULA"
+                    ]
+                  },
+                  "rule_config": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Conditional formatting applied successfully"
+          }
+        }
+      }
+    },
+    "/sheets/query": {
+      "post": {
+        "summary": "Query a Google Sheet with SQL-like syntax",
+        "operationId": "querySheet",
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "spreadsheet_id",
+                  "sheet_name",
+                  "query"
+                ],
+                "properties": {
+                  "spreadsheet_id": {
+                    "type": "string"
+                  },
+                  "sheet_name": {
+                    "type": "string"
+                  },
+                  "query": {
+                    "type": "string",
+                    "description": "SQL-like query (e.g., \"SELECT A, B WHERE C > 0\")"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Query results",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "headers": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "rows": {
+                      "type": "array",
+                      "items": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/docs/create": {
+      "post": {
+        "summary": "Create a Google Doc",
+        "operationId": "createDoc",
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "title"
+                ],
+                "properties": {
+                  "title": {
+                    "type": "string"
+                  },
+                  "content": {
+                    "type": "string"
+                  },
+                  "folder_path": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Returns documentId",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "documentId"
+                  ],
+                  "properties": {
+                    "documentId": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/docs/update": {
+      "post": {
+        "summary": "Update a Google Doc",
+        "operationId": "updateDoc",
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "document_id",
+                  "new_content"
+                ],
+                "properties": {
+                  "document_id": {
+                    "type": "string"
+                  },
+                  "new_content": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Document updated"
+          }
+        }
+      }
+    },
+    "/docs/read": {
+      "get": {
+        "summary": "Read a Google Doc",
+        "operationId": "readDoc",
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "document_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Doc content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "content"
+                  ],
+                  "properties": {
+                    "content": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Document not found"
+          }
+        }
+      }
+    },
+    "/docs/format": {
+      "post": {
+        "summary": "Apply formatting to a Google Doc",
+        "operationId": "formatDoc",
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "document_id",
+                  "requests"
+                ],
+                "properties": {
+                  "document_id": {
+                    "type": "string"
+                  },
+                  "requests": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "description": "Google Docs API formatting requests"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Formatting applied successfully"
+          }
+        }
+      }
+    },
+    "/docs/insert-image": {
+      "post": {
+        "summary": "Insert an image into a Google Doc",
+        "operationId": "insertDocImage",
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "document_id",
+                  "image_url",
+                  "index"
+                ],
+                "properties": {
+                  "document_id": {
+                    "type": "string"
+                  },
+                  "image_url": {
+                    "type": "string"
+                  },
+                  "index": {
+                    "type": "integer"
+                  },
+                  "width": {
+                    "type": "number"
+                  },
+                  "height": {
+                    "type": "number"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Image inserted successfully"
+          }
+        }
+      }
+    },
+    "/web/search": {
+      "get": {
+        "summary": "Perform live web search",
+        "operationId": "searchWeb",
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Search results",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "results"
+                  ],
+                  "properties": {
+                    "results": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/web/scrape": {
+      "get": {
+        "summary": "Scrape a URL's text content",
+        "operationId": "scrapeUrl",
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "url",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Scraped text",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "content"
+                  ],
+                  "properties": {
+                    "content": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
