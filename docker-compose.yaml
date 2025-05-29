@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  openwebui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: openwebui
+    ports:
+      - "8090:8080"
+    networks:
+      - ai-net
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    ports:
+      - "11434:11434"
+    networks:
+      - ai-net
+
+  tool-server:
+    build:
+      context: ./tool-server
+    container_name: tool-server
+    ports:
+      - "11435:80"
+    networks:
+      - ai-net
+
+networks:
+  ai-net:
+    driver: bridge
