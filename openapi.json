@@ -1,707 +1,1383 @@
 {
-  "openapi": "3.0.0",
-  "info": {
-    "title": "AI-Agency File System API",
-    "version": "1.0.0"
-  },
-  "paths": {
-    "/drive/list": {
-      "get": {
-        "summary": "List root folder contents",
-        "responses": { "200": { "description": "Success" } }
-      }
+    "openapi": "3.0.0",
+    "info": {
+        "title": "AI-Agency File System API",
+        "version": "1.0.0"
     },
-    "/drive/list-path": {
-      "get": {
-        "summary": "List folder by path",
-        "parameters": [
-          { "name": "subpath", "in": "query", "required": true, "schema": { "type": "string" } }
-        ],
-        "responses": { "200": { "description": "Success" } }
-      }
-    },
-    "/drive/read-file": {
-      "get": {
-        "summary": "Read file contents",
-        "parameters": [
-          { "name": "filename", "in": "query", "required": true, "schema": { "type": "string" } }
-        ],
-        "responses": { "200": { "description": "Success" } }
-      }
-    },
-    "/drive/write-file": {
-      "post": {
-        "summary": "Write file contents",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "filename": { "type": "string" },
-                  "content": { "type": "string" }
-                },
-                "required": ["filename", "content"]
-              }
-            }
-          }
-        },
-        "responses": { "200": { "description": "Success" } }
-      }
-    },
-    "/drive/create-folder": {
-      "post": {
-        "summary": "Create folder",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "folder_path": { "type": "string" }
-                },
-                "required": ["folder_path"]
-              }
-            }
-          }
-        },
-        "responses": { "200": { "description": "Success" } }
-      }
-    },
-    "/drive/move-file": {
-      "post": {
-        "summary": "Move file",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "src": { "type": "string" },
-                  "dst": { "type": "string" }
-                },
-                "required": ["src", "dst"]
-              }
-            }
-          }
-        },
-        "responses": { "200": { "description": "Success" } }
-      }
-    },
-    "/drive/delete-file": {
-      "delete": {
-        "summary": "Delete file (soft delete)",
-        "parameters": [
-          { "name": "path", "in": "query", "required": true, "schema": { "type": "string" } }
-        ],
-        "responses": { "200": { "description": "Success" } }
-      }
-    },
-    "/drive/get_metadata": {
-      "get": {
-        "summary": "Get file metadata",
-        "parameters": [
-          { "name": "path", "in": "query", "required": true, "schema": { "type": "string" } }
-        ],
-        "responses": { "200": { "description": "Success" } }
-      }
-    },
-    "/sheets/create": {
-      "post": {
-        "summary": "Create sheet",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "name": { "type": "string" },
-                  "data": { "type": "array", "items": { "type": "array", "items": { "type": "string" } } }
-                },
-                "required": ["name"]
-              }
-            }
-          }
-        },
-        "responses": { "200": { "description": "Success" } }
-      }
-    },
-    "/sheets/read": {
-      "get": {
-        "summary": "Read sheet",
-        "parameters": [
-          { "name": "spreadsheet_id", "in": "query", "required": true, "schema": { "type": "string" } }
-        ],
-        "responses": { "200": { "description": "Success" } }
-      }
-    },
-    "/sheets/update": {
-      "post": {
-        "summary": "Update sheet",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "spreadsheet_id": { "type": "string" },
-                  "values": { "type": "array", "items": { "type": "array", "items": { "type": "string" } } }
-                },
-                "required": ["spreadsheet_id", "values"]
-              }
-            }
-          }
-        },
-        "responses": { "200": { "description": "Success" } }
-      }
-    },
-    "/sheets/append": {
-      "post": {
-        "summary": "Append to sheet",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "spreadsheet_id": { "type": "string" },
-                  "values": { "type": "array", "items": { "type": "array", "items": { "type": "string" } } }
-                },
-                "required": ["spreadsheet_id", "values"]
-              }
-            }
-          }
-        },
-        "responses": { "200": { "description": "Success" } }
-      }
-    },
-{
-  "path": "/sheets/batch-update",
-  "method": "post",
-  "summary": "Batch update cells in spreadsheet",
-  "description": "Applies multiple updateCells requests to a spreadsheet by ID.",
-  "requestBody": {
-    "required": true,
-    "content": {
-      "application/json": {
-        "schema": {
-          "type": "object",
-          "properties": {
-            "spreadsheet_id": {
-              "type": "string"
-            },
-            "requests": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "updateCells": {
-                    "type": "object",
-                    "properties": {
-                      "start": {
-                        "type": "object",
-                        "properties": {
-                          "rowIndex": { "type": "integer" },
-                          "columnIndex": { "type": "integer" }
+    "servers": [
+        {
+            "url": "https://ipr-estimate.com",
+            "description": "API endpoint for IP address estimation"
+        }
+    ],
+    "paths": {
+        "/drive/list": {
+            "get": {
+                "summary": "List root folder contents",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "name": {
+                                                "type": "string"
+                                            },
+                                            "type": {
+                                                "type": "string",
+                                                "enum": [
+                                                    "file",
+                                                    "folder"
+                                                ]
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         }
-                      },
-                      "rows": {
-                        "type": "array",
-                        "items": {
-                          "type": "object",
-                          "properties": {
-                            "values": {
-                              "type": "array",
-                              "items": {
-                                "type": "object",
-                                "properties": {
-                                  "userEnteredValue": {
+                    }
+                }
+            }
+        },
+        "/drive/list-path": {
+            "get": {
+                "summary": "List folder by path",
+                "parameters": [
+                    {
+                        "name": "subpath",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "name": {
+                                                "type": "string"
+                                            },
+                                            "type": {
+                                                "type": "string",
+                                                "enum": [
+                                                    "file",
+                                                    "folder"
+                                                ]
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Path not found"
+                    }
+                }
+            }
+        },
+        "/drive/read-file": {
+            "get": {
+                "summary": "Read file contents",
+                "parameters": [
+                    {
+                        "name": "filename",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
                                     "type": "object",
                                     "properties": {
-                                      "stringValue": { "type": "string" }
+                                        "content": {
+                                            "type": "string"
+                                        }
                                     }
-                                  }
                                 }
-                              }
                             }
-                          }
                         }
-                      }
+                    },
+                    "404": {
+                        "description": "File not found"
                     }
-                  }
                 }
-              }
             }
-          },
-          "required": ["spreadsheet_id", "requests"]
-        }
-      }
-    }
-  },
-  "responses": {
-    "200": {
-      "description": "Batch update success",
-      "content": {
-        "application/json": {
-          "schema": {
-            "type": "object",
-            "properties": {
-              "success": { "type": "boolean" },
-              "applied_requests": { "type": "integer" }
-            }
-          }
-        }
-      }
-    }
-  }
-}
-{
-  "path": "/sheets/list-tabs",
-  "method": "get",
-  "summary": "List tabs (sheets) in a spreadsheet",
-  "description": "Returns list of tabs (sub-sheets) in a spreadsheet.",
-  "parameters": [
-    {
-      "name": "spreadsheet_id",
-      "in": "query",
-      "required": true,
-      "schema": { "type": "string" }
-    }
-  ],
-  "responses": {
-    "200": {
-      "description": "List of tabs",
-      "content": {
-        "application/json": {
-          "schema": {
-            "type": "object",
-            "properties": {
-              "tabs": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "title": { "type": "string" }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-}
-{
-  "path": "/sheets/add-tab",
-  "method": "post",
-  "summary": "Add a new tab to spreadsheet",
-  "description": "Creates a new sheet tab (CSV file) inside the spreadsheet folder.",
-  "requestBody": {
-    "required": true,
-    "content": {
-      "application/json": {
-        "schema": {
-          "type": "object",
-          "properties": {
-            "spreadsheet_id": { "type": "string" },
-            "title": { "type": "string" }
-          },
-          "required": ["spreadsheet_id", "title"]
-        }
-      }
-    }
-  },
-  "responses": {
-    "200": {
-      "description": "Tab created",
-      "content": {
-        "application/json": {
-          "schema": {
-            "type": "object",
-            "properties": {
-              "success": { "type": "boolean" },
-              "sheetId": { "type": "integer" },
-              "title": { "type": "string" }
-            }
-          }
-        }
-      }
-    }
-  }
-}
-{
-  "path": "/sheets/delete-tab",
-  "method": "delete",
-  "summary": "Delete a tab from spreadsheet",
-  "description": "Deletes a sheet tab (CSV file) inside the spreadsheet folder.",
-  "parameters": [
-    {
-      "name": "spreadsheet_id",
-      "in": "query",
-      "required": true,
-      "schema": { "type": "string" }
-    },
-    {
-      "name": "title",
-      "in": "query",
-      "required": true,
-      "schema": { "type": "string" }
-    }
-  ],
-  "responses": {
-    "200": {
-      "description": "Tab deleted",
-      "content": {
-        "application/json": {
-          "schema": {
-            "type": "object",
-            "properties": {
-              "success": { "type": "boolean" }
-            }
-          }
-        }
-      }
-    }
-  }
-}
-{
-  "path": "/sheets/format",
-  "method": "post",
-  "summary": "Apply formatting to a sheet tab",
-  "description": "Stores formatting information for a specific tab in a spreadsheet.",
-  "requestBody": {
-    "required": true,
-    "content": {
-      "application/json": {
-        "schema": {
-          "type": "object",
-          "properties": {
-            "spreadsheet_id": { "type": "string" },
-            "tab": { "type": "string" },
-            "formatting": { "type": "object" }
-          },
-          "required": ["spreadsheet_id", "tab", "formatting"]
-        }
-      }
-    }
-  },
-  "responses": {
-    "200": {
-      "description": "Formatting applied",
-      "content": {
-        "application/json": {
-          "schema": {
-            "type": "object",
-            "properties": {
-              "success": { "type": "boolean" }
-            }
-          }
-        }
-      }
-    }
-  }
-}
-{
-  "path": "/sheets/create-filter",
-  "method": "post",
-  "summary": "Create a filter on a sheet tab",
-  "description": "Stores filter configurations for a specific tab in a spreadsheet.",
-  "requestBody": {
-    "required": true,
-    "content": {
-      "application/json": {
-        "schema": {
-          "type": "object",
-          "properties": {
-            "spreadsheet_id": { "type": "string" },
-            "tab": { "type": "string" },
-            "filter_config": { "type": "object" }
-          },
-          "required": ["spreadsheet_id", "tab", "filter_config"]
-        }
-      }
-    }
-  },
-  "responses": {
-    "200": {
-      "description": "Filter created",
-      "content": {
-        "application/json": {
-          "schema": {
-            "type": "object",
-            "properties": {
-              "success": { "type": "boolean" }
-            }
-          }
-        }
-      }
-    }
-  }
-}
-{
-  "path": "/sheets/freeze-panes",
-  "method": "post",
-  "summary": "Freeze rows or columns in a sheet tab",
-  "description": "Stores freezing configuration (rows/columns) for a specific sheet tab.",
-  "requestBody": {
-    "required": true,
-    "content": {
-      "application/json": {
-        "schema": {
-          "type": "object",
-          "properties": {
-            "spreadsheet_id": { "type": "string" },
-            "tab": { "type": "string" },
-            "rows": { "type": "integer" },
-            "columns": { "type": "integer" }
-          },
-          "required": ["spreadsheet_id", "tab"]
-        }
-      }
-    }
-  },
-  "responses": {
-    "200": {
-      "description": "Freeze applied",
-      "content": {
-        "application/json": {
-          "schema": {
-            "type": "object",
-            "properties": {
-              "success": { "type": "boolean" }
-            }
-          }
-        }
-      }
-    }
-  }
-}
-{
-  "path": "/sheets/conditional-format",
-  "method": "post",
-  "summary": "Apply conditional formatting to sheet tab",
-  "description": "Stores conditional formatting rule for a given sheet tab.",
-  "requestBody": {
-    "required": true,
-    "content": {
-      "application/json": {
-        "schema": {
-          "type": "object",
-          "properties": {
-            "spreadsheet_id": { "type": "string" },
-            "tab": { "type": "string" },
-            "rule": { "type": "object" }
-          },
-          "required": ["spreadsheet_id", "tab", "rule"]
-        }
-      }
-    }
-  },
-  "responses": {
-    "200": {
-      "description": "Conditional format applied",
-      "content": {
-        "application/json": {
-          "schema": {
-            "type": "object",
-            "properties": {
-              "success": { "type": "boolean" }
-            }
-          }
-        }
-      }
-    }
-  }
-}
-{
-  "path": "/sheets/query",
-  "method": "post",
-  "summary": "Query a spreadsheet",
-  "description": "Executes a simple query on the spreadsheet (currently only supports SELECT *).",
-  "requestBody": {
-    "required": true,
-    "content": {
-      "application/json": {
-        "schema": {
-          "type": "object",
-          "properties": {
-            "spreadsheet_id": { "type": "string" },
-            "query": { "type": "string" }
-          },
-          "required": ["spreadsheet_id", "query"]
-        }
-      }
-    }
-  },
-  "responses": {
-    "200": {
-      "description": "Query results",
-      "content": {
-        "application/json": {
-          "schema": {
-            "type": "object",
-            "properties": {
-              "headers": {
-                "type": "array",
-                "items": { "type": "string" }
-              },
-              "rows": {
-                "type": "array",
-                "items": {
-                  "type": "array",
-                  "items": { "type": "string" }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-}
-     "/docs/create": {
-      "post": {
-        "summary": "Create doc",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "title": { "type": "string" },
-                  "content": { "type": "string" }
-                },
-                "required": ["title"]
-              }
-            }
-          }
         },
-        "responses": { "200": { "description": "Success" } }
-      }
-    },
-    "/docs/read": {
-      "get": {
-        "summary": "Read doc",
-        "parameters": [
-          { "name": "document_id", "in": "query", "required": true, "schema": { "type": "string" } }
-        ],
-        "responses": { "200": { "description": "Success" } }
-      }
-    },
-    "/docs/update": {
-      "post": {
-        "summary": "Update doc",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "document_id": { "type": "string" },
-                  "new_content": { "type": "string" }
+        "/drive/write-file": {
+            "post": {
+                "summary": "Write file contents",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "filename": {
+                                        "type": "string"
+                                    },
+                                    "content": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "filename",
+                                    "content"
+                                ]
+                            }
+                        }
+                    }
                 },
-                "required": ["document_id", "new_content"]
-              }
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
-          }
         },
-        "responses": { "200": { "description": "Success" } }
-      }
-    },
-{
-  "path": "/docs/format",
-  "method": "post",
-  "summary": "Format document",
-  "description": "Apply formatting metadata to the document.",
-  "requestBody": {
-    "required": true,
-    "content": {
-      "application/json": {
-        "schema": {
-          "type": "object",
-          "properties": {
-            "document_id": { "type": "string" },
-            "requests": {
-              "type": "array",
-              "items": { "type": "object" }
+        "/drive/create-folder": {
+            "post": {
+                "summary": "Create folder",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "folder_path": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "folder_path"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
-          },
-          "required": ["document_id", "requests"]
-        }
-      }
-    }
-  },
-  "responses": {
-    "200": {
-      "description": "Formatting applied",
-      "content": {
-        "application/json": {
-          "schema": {
-            "type": "object",
-            "properties": {
-              "success": { "type": "boolean" }
+        },
+        "/drive/move-file": {
+            "post": {
+                "summary": "Move file",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "src": {
+                                        "type": "string"
+                                    },
+                                    "dst": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "src",
+                                    "dst"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
-          }
-        }
-      }
-    }
-  }
-}
-{
-  "path": "/docs/insert-image",
-  "method": "post",
-  "summary": "Insert image reference into document",
-  "description": "Inserts an image placeholder into the document content at a specified index.",
-  "requestBody": {
-    "required": true,
-    "content": {
-      "application/json": {
-        "schema": {
-          "type": "object",
-          "properties": {
-            "document_id": { "type": "string" },
-            "image_url": { "type": "string" },
-            "index": { "type": "integer" }
-          },
-          "required": ["document_id", "image_url", "index"]
-        }
-      }
-    }
-  },
-  "responses": {
-    "200": {
-      "description": "Image inserted",
-      "content": {
-        "application/json": {
-          "schema": {
-            "type": "object",
-            "properties": {
-              "success": { "type": "boolean" }
+        },
+        "/drive/delete-file": {
+            "delete": {
+                "summary": "Delete file (soft delete)",
+                "parameters": [
+                    {
+                        "name": "path",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Path not found"
+                    }
+                }
             }
-          }
+        },
+        "/drive/get_metadata": {
+            "get": {
+                "summary": "Get file metadata",
+                "parameters": [
+                    {
+                        "name": "path",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "path": {
+                                            "type": "string"
+                                        },
+                                        "size": {
+                                            "type": "integer"
+                                        },
+                                        "modified": {
+                                            "type": "string",
+                                            "format": "date-time"
+                                        },
+                                        "type": {
+                                            "type": "string",
+                                            "enum": [
+                                                "file",
+                                                "folder"
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Path not found"
+                    }
+                }
+            }
+        },
+        "/sheets/create": {
+            "post": {
+                "summary": "Create sheet",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "data": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    }
+                                },
+                                "required": [
+                                    "name"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "spreadsheetId": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/sheets/read": {
+            "get": {
+                "summary": "Read sheet",
+                "parameters": [
+                    {
+                        "name": "spreadsheet_id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "values": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Sheet not found"
+                    }
+                }
+            }
+        },
+        "/sheets/update": {
+            "post": {
+                "summary": "Update sheet",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "spreadsheet_id": {
+                                        "type": "string"
+                                    },
+                                    "values": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    }
+                                },
+                                "required": [
+                                    "spreadsheet_id",
+                                    "values"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/sheets/append": {
+            "post": {
+                "summary": "Append to sheet",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "spreadsheet_id": {
+                                        "type": "string"
+                                    },
+                                    "values": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    }
+                                },
+                                "required": [
+                                    "spreadsheet_id",
+                                    "values"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "appended_rows": {
+                                            "type": "integer"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Spreadsheet not found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/sheets/batch-update": {
+            "post": {
+                "summary": "Batch update cells in spreadsheet",
+                "description": "Applies multiple updateCells requests to a spreadsheet by ID.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "spreadsheet_id": {
+                                        "type": "string"
+                                    },
+                                    "requests": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object",
+                                            "properties": {
+                                                "updateCells": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "start": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "rowIndex": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "columnIndex": {
+                                                                    "type": "integer"
+                                                                }
+                                                            }
+                                                        },
+                                                        "rows": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "values": {
+                                                                        "type": "array",
+                                                                        "items": {
+                                                                            "type": "object",
+                                                                            "properties": {
+                                                                                "userEnteredValue": {
+                                                                                    "type": "object",
+                                                                                    "properties": {
+                                                                                        "stringValue": {
+                                                                                            "type": "string"
+                                                                                        }
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "required": [
+                                    "spreadsheet_id",
+                                    "requests"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Batch update success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "applied_requests": {
+                                            "type": "integer"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Spreadsheet not found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/sheets/list-tabs": {
+            "get": {
+                "summary": "List tabs (sheets) in a spreadsheet",
+                "description": "Returns list of tabs (sub-sheets) in a spreadsheet.",
+                "parameters": [
+                    {
+                        "name": "spreadsheet_id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of tabs",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "title": {
+                                                "type": "string"
+                                            },
+                                            "sheetId": {
+                                                "type": "integer"
+                                            },
+                                            "index": {
+                                                "type": "integer"
+                                            },
+                                            "sheetType": {
+                                                "type": "string"
+                                            },
+                                            "hidden": {
+                                                "type": "boolean"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Missing required parameter"
+                    },
+                    "404": {
+                        "description": "Spreadsheet not found"
+                    }
+                }
+            }
+        },
+        "/sheets/add-tab": {
+            "post": {
+                "summary": "Add a new tab to spreadsheet",
+                "description": "Creates a new sheet tab (CSV file) inside the spreadsheet folder.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "spreadsheet_id": {
+                                        "type": "string"
+                                    },
+                                    "title": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "spreadsheet_id",
+                                    "title"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Tab created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "sheetId": {
+                                            "type": "integer"
+                                        },
+                                        "title": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Missing required parameters or tab already exists"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/sheets/delete-tab": {
+            "delete": {
+                "summary": "Delete a tab from spreadsheet",
+                "description": "Deletes a sheet tab (CSV file) inside the spreadsheet folder.",
+                "parameters": [
+                    {
+                        "name": "spreadsheet_id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "title",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Tab deleted",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Missing required parameters"
+                    },
+                    "404": {
+                        "description": "Tab not found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/sheets/format": {
+            "post": {
+                "summary": "Apply formatting to a sheet tab",
+                "description": "Stores formatting information for a specific tab in a spreadsheet.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "spreadsheet_id": {
+                                        "type": "string"
+                                    },
+                                    "tab": {
+                                        "type": "string"
+                                    },
+                                    "formatting": {
+                                        "type": "object"
+                                    }
+                                },
+                                "required": [
+                                    "spreadsheet_id",
+                                    "tab",
+                                    "formatting"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Formatting applied",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Spreadsheet not found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/sheets/create-filter": {
+            "post": {
+                "summary": "Create a filter on a sheet tab",
+                "description": "Stores filter configurations for a specific tab in a spreadsheet.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "spreadsheet_id": {
+                                        "type": "string"
+                                    },
+                                    "tab": {
+                                        "type": "string"
+                                    },
+                                    "filter_config": {
+                                        "type": "object"
+                                    }
+                                },
+                                "required": [
+                                    "spreadsheet_id",
+                                    "tab",
+                                    "filter_config"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Filter created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Spreadsheet not found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/sheets/freeze-panes": {
+            "post": {
+                "summary": "Freeze rows or columns in a sheet tab",
+                "description": "Stores freezing configuration (rows/columns) for a specific sheet tab.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "spreadsheet_id": {
+                                        "type": "string"
+                                    },
+                                    "tab": {
+                                        "type": "string"
+                                    },
+                                    "rows": {
+                                        "type": "integer"
+                                    },
+                                    "columns": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "required": [
+                                    "spreadsheet_id",
+                                    "tab"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Freeze applied",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Spreadsheet not found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/sheets/conditional-format": {
+            "post": {
+                "summary": "Apply conditional formatting to sheet tab",
+                "description": "Stores conditional formatting rule for a given sheet tab.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "spreadsheet_id": {
+                                        "type": "string"
+                                    },
+                                    "tab": {
+                                        "type": "string"
+                                    },
+                                    "rule": {
+                                        "type": "object"
+                                    }
+                                },
+                                "required": [
+                                    "spreadsheet_id",
+                                    "tab",
+                                    "rule"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Conditional format applied",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Spreadsheet not found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/sheets/query": {
+            "post": {
+                "summary": "Query a spreadsheet",
+                "description": "Executes a simple query on the spreadsheet (currently only supports SELECT *).",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "spreadsheet_id": {
+                                        "type": "string"
+                                    },
+                                    "query": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "spreadsheet_id",
+                                    "query"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Query results",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "headers": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "rows": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Unsupported query"
+                    },
+                    "404": {
+                        "description": "Spreadsheet not found"
+                    }
+                }
+            }
+        },
+        "/docs/create": {
+            "post": {
+                "summary": "Create doc",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "title": {
+                                        "type": "string"
+                                    },
+                                    "content": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "title"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "document_id": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/docs/read": {
+            "get": {
+                "summary": "Read doc",
+                "parameters": [
+                    {
+                        "name": "document_id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "content": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Document not found"
+                    }
+                }
+            }
+        },
+        "/docs/update": {
+            "post": {
+                "summary": "Update doc",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "document_id": {
+                                        "type": "string"
+                                    },
+                                    "new_content": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "document_id",
+                                    "new_content"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Document not found"
+                    }
+                }
+            }
+        },
+        "/docs/format": {
+            "post": {
+                "summary": "Format document",
+                "description": "Apply formatting metadata to the document.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "document_id": {
+                                        "type": "string"
+                                    },
+                                    "requests": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "required": [
+                                    "document_id",
+                                    "requests"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Formatting applied",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/docs/insert-image": {
+            "post": {
+                "summary": "Insert image reference into document",
+                "description": "Inserts an image placeholder into the document content at a specified index.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "document_id": {
+                                        "type": "string"
+                                    },
+                                    "image_url": {
+                                        "type": "string"
+                                    },
+                                    "index": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "required": [
+                                    "document_id",
+                                    "image_url"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Image inserted",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Document not found"
+                    }
+                }
+            }
+        },
+        "/web/search": {
+            "get": {
+                "summary": "Simulated web search",
+                "parameters": [
+                    {
+                        "name": "query",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "results": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "title": {
+                                                        "type": "string"
+                                                    },
+                                                    "snippet": {
+                                                        "type": "string"
+                                                    },
+                                                    "link": {
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Missing required parameter"
+                    }
+                }
+            }
+        },
+        "/web/scrape": {
+            "get": {
+                "summary": "Simulated web scrape",
+                "parameters": [
+                    {
+                        "name": "url",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "content": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Missing required parameter"
+                    }
+                }
+            }
         }
-      }
     }
-  }
-}
-    "/web/search": {
-      "get": {
-        "summary": "Simulated web search",
-        "parameters": [
-          { "name": "query", "in": "query", "required": true, "schema": { "type": "string" } }
-        ],
-        "responses": { "200": { "description": "Success" } }
-      }
-    },
-    "/web/scrape": {
-      "get": {
-        "summary": "Simulated web scrape",
-        "parameters": [
-          { "name": "url", "in": "query", "required": true, "schema": { "type": "string" } }
-        ],
-        "responses": { "200": { "description": "Success" } }
-      }
-    }
-  }
 }
